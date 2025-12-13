@@ -34,8 +34,10 @@
     {%- else %}
     types: [javascript]
     {%- endif %}
+    args:
+    - --concurrency=1
     {%- if eslint_config %}
-    args: [--config={{ eslint_config }}]
+    - --config={{ eslint_config }}
     {%- endif %}
     additional_dependencies:
     {%- if typescript %}
