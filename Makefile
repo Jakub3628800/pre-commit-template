@@ -1,13 +1,13 @@
 .PHONY: run test install build clean run-precommit coverage test-all update-templates generate-config update-hooks
 
 run:
-	uv run python -m pre_commit_tools
+	uv run python -m pre_commit_template
 
 update-templates:  ## Update hook versions in templates
 	uv run python scripts/update_hook_versions.py
 
 generate-config:  ## Generate .pre-commit-config.yaml from templates
-	uv run python -m pre_commit_tools
+	uv run python -m pre_commit_template
 
 update-hooks:  ## Update templates and regenerate config
 	@$(MAKE) update-templates
@@ -25,7 +25,7 @@ run-precommit:
 	uv run --extra dev pre-commit run --all-files
 
 coverage:
-	uv run --extra dev pytest tests/ --cov=pre_commit_tools --cov-report=html
+	uv run --extra dev pytest tests/ --cov=pre_commit_template --cov-report=html
 	@echo "Coverage report generated in htmlcov/index.html"
 
 test-all:

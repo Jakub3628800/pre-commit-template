@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from unittest.mock import patch
 
-from pre_commit_tools.discover import (
+from pre_commit_template.discover import (
     detect_python_version,
     find_config_files,
     is_ignored_by_gitignore,
@@ -143,7 +143,7 @@ requires-python = ">=3.9"
         (tmp_path / "pyproject.toml").write_text(pyproject_content)
 
         # Patch the module-level toml_lib variable
-        from pre_commit_tools import discover
+        from pre_commit_template import discover
 
         original_toml_lib = discover.toml_lib
         try:

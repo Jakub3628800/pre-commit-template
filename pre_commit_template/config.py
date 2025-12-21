@@ -26,7 +26,6 @@ class PreCommitConfig(BaseModel):
     # Python hooks options
     python: bool = Field(default=False)
     uv_lock: bool = Field(default=False)
-    check_exports: bool = Field(default=False)
     pyrefly_args: Optional[list[str]] = Field(default=None)
 
     # Docker hooks options

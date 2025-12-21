@@ -12,7 +12,6 @@ source .venv/bin/activate  # Activate virtual environment
 ```bash
 make test            # Run pytest tests and pre-commit hooks
 make coverage        # Generate coverage report (outputs to htmlcov/index.html)
-make test-all        # Run all tests including GitHub Actions (if act available)
 ```
 
 ### Linting and Formatting
@@ -30,22 +29,21 @@ make build          # Build package
 
 ## Architecture Overview
 
-This is a Python CLI tool that auto-generates `.pre-commit-config.yaml` files by detecting technologies in repositories. The architecture follows a modular design:
+This is a Python CLI tool that auto-generates `.pre-commit-config.yaml` files by detecting technologies in repositories:
 
-- **File Scanner** (`pre_commit_tools/detector/file_scanner.py`): Scans repository to detect technologies via file extensions and content patterns
-- **Hook Registry** (`pre_commit_tools/hooks/hook_registry.py`): Maps detected technologies to appropriate pre-commit hooks with priority system
-- **YAML Builder** (`pre_commit_tools/generator/yaml_builder.py`): Generates the final pre-commit configuration with smart hook merging and ordering
-- **CLI Interface** (`pre_commit_tools/main.py`): Main entry point using argparse and rich for output formatting
+- **Discovery** (`pre_commit_template/discover.py`): Scans repository to detect technologies via file extensions and content patterns
+- **Config** (`pre_commit_template/config.py`): Pydantic configuration model for pre-commit options
+- **Hook Templates** (`pre_commit_template/hook_templates/`): Jinja2 templates for generating YAML configs
+- **CLI Interface** (`pre_commit_template/main.py`): Main entry point using argparse and rich for output formatting
 
 ## Key Implementation Details
 
 - Uses uv for package management and virtual environments
-- Supports Python 3.14+ with setuptools build system
-- Technologies detected: Python, JavaScript, TypeScript, Go, Rust, HTML, CSS, YAML, Docker
-- Hook priority system: Security (1) → Basic Checks (2) → Language-Specific (3-4) → Framework-Specific (11) → Performance/Testing (12-14)
-- Test fixtures in `tests/fixtures/sample_repos/` with expected configs in `tests/expected_configs/`
+- Supports Python 3.11+ with setuptools build system
+- Technologies detected: Python, JavaScript, TypeScript, Go, Docker, GitHub Actions, YAML, JSON, TOML, XML
+- Hook templates use Jinja2 for flexible config generation
 - Rich console output with progress indication and colored text
 
 ## Entry Point
 
-The main CLI command is registered as `pre-commit-starter` in pyproject.toml, pointing to `pre_commit_starter.main:main`.
+The CLI command `pre-commit-template` is registered in pyproject.toml, pointing to `pre_commit_template.main:main`.
