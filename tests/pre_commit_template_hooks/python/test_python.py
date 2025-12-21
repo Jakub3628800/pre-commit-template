@@ -8,7 +8,7 @@ import yaml
 # Add root to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
-from pre_commit_tools.hook_templates.render import _generate_hooks
+from pre_commit_template.hook_templates.render import _generate_hooks
 
 
 def test_generate_python_hooks_basic():

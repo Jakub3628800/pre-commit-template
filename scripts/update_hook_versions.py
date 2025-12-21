@@ -34,7 +34,7 @@ class TemplateUpdater:
 
     def __init__(self, repo_root: Optional[Path] = None):
         self.repo_root = repo_root or Path.cwd()
-        self.template_dir = self.repo_root / "pre_commit_tools" / "hook_templates"
+        self.template_dir = self.repo_root / "pre_commit_template" / "hook_templates"
         self.temp_dir: Optional[Path] = None
         self.original_revisions: Dict[str, str] = {}
         self.updated_hooks: List[Dict[str, str]] = []

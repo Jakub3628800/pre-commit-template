@@ -3,9 +3,9 @@ requires = ["uv", "setuptools>=61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pre-commit-tools"
+name = "pre-commit-template"
 version = "0.1.1"
-description = "Simple tool to generate pre-commit configuration files and hooks."
+description = "Auto-detect technologies and generate pre-commit configuration files."
 readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}
@@ -29,16 +29,14 @@ dev = [
 ]
 
 [project.scripts]
-pre-commit-tools = "pre_commit_tools.main:main"
-check-exports = "pre_commit_tools.check_exports.cli:main"
-generate-workflow = "pre_commit_tools.generate_workflow.cli:main"
+pre-commit-template = "pre_commit_template.main:main"
 
 [tool.setuptools]
-packages = ["pre_commit_tools", "pre_commit_tools.check_exports", "pre_commit_tools.hook_templates", "pre_commit_tools.generate_workflow"]
+packages = ["pre_commit_template", "pre_commit_template.hook_templates"]
 
 [tool.setuptools.package-data]
 "*" = ["py.typed"]
-"pre_commit_tools" = ["hook_templates/*.j2"]
+"pre_commit_template" = ["hook_templates/*.j2"]
 
 [tool.pytest.ini_options]
 markers = [

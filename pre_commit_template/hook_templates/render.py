@@ -4,7 +4,7 @@ from typing import Any, Optional
 
 from jinja2 import Environment, FileSystemLoader
 
-from pre_commit_tools.config import PreCommitConfig
+from pre_commit_template.config import PreCommitConfig
 
 # Package version - update this when version changes
 __version__ = "0.1.1"
@@ -79,7 +79,6 @@ def render_config(config: PreCommitConfig) -> str:
             config.python,
             {
                 "uv_lock": config.uv_lock,
-                "check_exports": config.check_exports,
                 "pyrefly_args": config.pyrefly_args,
             },
         ),

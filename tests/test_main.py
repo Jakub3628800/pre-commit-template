@@ -4,8 +4,8 @@ import subprocess
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-from pre_commit_tools.config import PreCommitConfig
-from pre_commit_tools.main import (
+from pre_commit_template.config import PreCommitConfig
+from pre_commit_template.main import (
     ask_user_preferences,
     display_detected_technologies,
     main,
@@ -15,8 +15,8 @@ from pre_commit_tools.main import (
 class TestMainCLI:
     """Test main CLI functionality."""
 
-    @patch("pre_commit_tools.main.discover_config")
-    @patch("pre_commit_tools.main.render_config")
+    @patch("pre_commit_template.main.discover_config")
+    @patch("pre_commit_template.main.render_config")
     @patch("subprocess.run")
     @patch("pathlib.Path.write_text")
     def test_main_auto_generate_mode_default(self, mock_write, mock_subprocess, mock_render, mock_discover):
@@ -28,7 +28,7 @@ class TestMainCLI:
         mock_subprocess.return_value.returncode = 0
 
         with patch("sys.argv", ["pre-commit-starter"]):
-            with patch("pre_commit_tools.main.console"):
+            with patch("pre_commit_template.main.console"):
                 main()
 
         mock_discover.assert_called_once()
@@ -36,8 +36,8 @@ class TestMainCLI:
         mock_write.assert_called_once_with("yaml content")
         assert mock_subprocess.call_count == 2  # install and run
 
-    @patch("pre_commit_tools.main.discover_config")
-    @patch("pre_commit_tools.main.render_config")
+    @patch("pre_commit_template.main.discover_config")
+    @patch("pre_commit_template.main.render_config")
     @patch("subprocess.run")
     @patch("builtins.print")
     def test_main_interactive_mode(self, mock_print, mock_subprocess, mock_render, mock_discover):
@@ -48,7 +48,7 @@ class TestMainCLI:
         mock_render.return_value = "yaml content"
 
         with patch("sys.argv", ["pre-commit-starter", "-i"]):
-            with patch("pre_commit_tools.main.Confirm.ask", return_value=False):
+            with patch("pre_commit_template.main.Confirm.ask", return_value=False):
                 main()
 
         mock_discover.assert_called_once()
@@ -56,7 +56,7 @@ class TestMainCLI:
         mock_print.assert_called_with("yaml content")
         mock_subprocess.assert_not_called()
 
-    @patch("pre_commit_tools.main.discover_config")
+    @patch("pre_commit_template.main.discover_config")
     @patch("subprocess.run")
     def test_main_subprocess_called_process_error(self, mock_subprocess, mock_discover):
         """Test main function handles subprocess.CalledProcessError."""
@@ -65,13 +65,13 @@ class TestMainCLI:
         mock_subprocess.side_effect = subprocess.CalledProcessError(1, "cmd")
 
         with patch("sys.argv", ["pre-commit-starter"]):
-            with patch("pre_commit_tools.main.console") as mock_console:
+            with patch("pre_commit_template.main.console") as mock_console:
                 with patch("pathlib.Path.write_text"):
                     main()
 
         mock_console.print.assert_any_call("Failed to setup pre-commit: Command 'cmd' returned non-zero exit status 1.")
 
-    @patch("pre_commit_tools.main.discover_config")
+    @patch("pre_commit_template.main.discover_config")
     @patch("subprocess.run")
     def test_main_file_not_found_error(self, mock_subprocess, mock_discover):
         """Test main function handles FileNotFoundError when pre-commit not found."""
@@ -80,13 +80,13 @@ class TestMainCLI:
         mock_subprocess.side_effect = FileNotFoundError()
 
         with patch("sys.argv", ["pre-commit-starter"]):
-            with patch("pre_commit_tools.main.console") as mock_console:
+            with patch("pre_commit_template.main.console") as mock_console:
                 with patch("pathlib.Path.write_text"):
                     main()
 
         mock_console.print.assert_any_call("pre-commit not found in PATH")
 
-    @patch("pre_commit_tools.main.discover_config")
+    @patch("pre_commit_template.main.discover_config")
     @patch("subprocess.run")
     def test_main_pre_commit_hooks_fail(self, mock_subprocess, mock_discover):
         """Test main function when pre-commit hooks fail."""
@@ -104,7 +104,7 @@ class TestMainCLI:
         mock_subprocess.side_effect = [install_result, run_result]
 
         with patch("sys.argv", ["pre-commit-starter"]):
-            with patch("pre_commit_tools.main.console") as mock_console:
+            with patch("pre_commit_template.main.console") as mock_console:
                 with patch("pathlib.Path.write_text"):
                     main()
 
@@ -121,9 +121,9 @@ class TestUserPreferences:
         detected_config = PreCommitConfig(python=True, yaml=True, js=True, typescript=True)
 
         # Mock all user responses as True to accept defaults
-        with patch("pre_commit_tools.main.Confirm.ask", return_value=True):
-            with patch("pre_commit_tools.main.Prompt.ask", return_value=""):
-                with patch("pre_commit_tools.main.console"):
+        with patch("pre_commit_template.main.Confirm.ask", return_value=True):
+            with patch("pre_commit_template.main.Prompt.ask", return_value=""):
+                with patch("pre_commit_template.main.console"):
                     result = ask_user_preferences(detected_config)
 
         assert result.python is True
@@ -136,7 +136,7 @@ class TestUserPreferences:
         detected_config = PreCommitConfig(python=True, js=True, go=True, docker=True)
 
         # Mock user declining all technologies
-        with patch("pre_commit_tools.main.Confirm.ask", return_value=False):
+        with patch("pre_commit_template.main.Confirm.ask", return_value=False):
             result = ask_user_preferences(detected_config)
 
         assert result.python is False
@@ -148,8 +148,8 @@ class TestUserPreferences:
         """Test Python version prompting."""
         detected_config = PreCommitConfig(python=True, python_version="python3.9")
 
-        with patch("pre_commit_tools.main.Confirm.ask", return_value=True):
-            with patch("pre_commit_tools.main.Prompt.ask", return_value="python3.11"):
+        with patch("pre_commit_template.main.Confirm.ask", return_value=True):
+            with patch("pre_commit_template.main.Prompt.ask", return_value="python3.11"):
                 result = ask_user_preferences(detected_config)
 
         assert result.python_version == "python3.11"
@@ -158,8 +158,8 @@ class TestUserPreferences:
         """Test Python version prompting when none detected."""
         detected_config = PreCommitConfig(python=True, python_version=None)
 
-        with patch("pre_commit_tools.main.Confirm.ask", return_value=True):
-            with patch("pre_commit_tools.main.Prompt.ask", return_value=""):
+        with patch("pre_commit_template.main.Confirm.ask", return_value=True):
+            with patch("pre_commit_template.main.Prompt.ask", return_value=""):
                 result = ask_user_preferences(detected_config)
 
         assert result.python_version is None
@@ -193,9 +193,9 @@ class TestUserPreferences:
             True,  # Include security scanning? (user enables)
         ]
 
-        with patch("pre_commit_tools.main.Confirm.ask", side_effect=confirm_responses):
-            with patch("pre_commit_tools.main.Prompt.ask", return_value="python3.10"):
-                with patch("pre_commit_tools.main.console"):
+        with patch("pre_commit_template.main.Confirm.ask", side_effect=confirm_responses):
+            with patch("pre_commit_template.main.Prompt.ask", return_value="python3.10"):
+                with patch("pre_commit_template.main.console"):
                     result = ask_user_preferences(detected_config)
 
         assert result.python is True
@@ -211,7 +211,7 @@ class TestDisplayFunctions:
         """Test displaying Python-only configuration."""
         config = PreCommitConfig(python=True, python_version="python3.9", yaml=True)
 
-        with patch("pre_commit_tools.main.console") as mock_console:
+        with patch("pre_commit_template.main.console") as mock_console:
             display_detected_technologies(config)
 
         mock_console.print.assert_called()
@@ -236,7 +236,7 @@ class TestDisplayFunctions:
             xml=True,
         )
 
-        with patch("pre_commit_tools.main.console") as mock_console:
+        with patch("pre_commit_template.main.console") as mock_console:
             display_detected_technologies(config)
 
         mock_console.print.assert_called()
@@ -245,7 +245,7 @@ class TestDisplayFunctions:
         """Test displaying minimal configuration."""
         config = PreCommitConfig()  # All defaults
 
-        with patch("pre_commit_tools.main.console") as mock_console:
+        with patch("pre_commit_template.main.console") as mock_console:
             display_detected_technologies(config)
 
         mock_console.print.assert_called()
@@ -254,7 +254,7 @@ class TestDisplayFunctions:
         """Test displaying JavaScript with different variants."""
         config = PreCommitConfig(js=True, typescript=True, jsx=True)
 
-        with patch("pre_commit_tools.main.console") as mock_console:
+        with patch("pre_commit_template.main.console") as mock_console:
             display_detected_technologies(config)
 
         mock_console.print.assert_called()
@@ -263,9 +263,9 @@ class TestDisplayFunctions:
 class TestIntegrationScenarios:
     """Test integration scenarios and edge cases."""
 
-    @patch("pre_commit_tools.main.discover_config")
-    @patch("pre_commit_tools.main.ask_user_preferences")
-    @patch("pre_commit_tools.main.render_config")
+    @patch("pre_commit_template.main.discover_config")
+    @patch("pre_commit_template.main.ask_user_preferences")
+    @patch("pre_commit_template.main.render_config")
     def test_main_user_customization_flow(self, mock_render, mock_ask, mock_discover):
         """Test main function when user wants to customize in interactive mode."""
         detected_config = PreCommitConfig(python=True)
@@ -276,7 +276,7 @@ class TestIntegrationScenarios:
         mock_render.return_value = "custom yaml"
 
         with patch("sys.argv", ["pre-commit-starter", "-i"]):
-            with patch("pre_commit_tools.main.Confirm.ask", return_value=True):
+            with patch("pre_commit_template.main.Confirm.ask", return_value=True):
                 with patch("builtins.print") as mock_print:
                     main()
 
@@ -287,9 +287,9 @@ class TestIntegrationScenarios:
     def test_main_argument_parsing(self):
         """Test argument parsing functionality."""
         with patch("sys.argv", ["pre-commit-starter", "--interactive"]):
-            with patch("pre_commit_tools.main.discover_config"):
-                with patch("pre_commit_tools.main.render_config"):
-                    with patch("pre_commit_tools.main.Confirm.ask", return_value=False):
+            with patch("pre_commit_template.main.discover_config"):
+                with patch("pre_commit_template.main.render_config"):
+                    with patch("pre_commit_template.main.Confirm.ask", return_value=False):
                         with patch("builtins.print"):
                             main()
 
@@ -301,12 +301,12 @@ class TestIntegrationScenarios:
             mock_cwd.return_value = Path("/test/path")
 
             with patch("sys.argv", ["pre-commit-starter"]):
-                with patch("pre_commit_tools.main.discover_config") as mock_discover:
+                with patch("pre_commit_template.main.discover_config") as mock_discover:
                     mock_discover.return_value = PreCommitConfig()
-                    with patch("pre_commit_tools.main.render_config"):
+                    with patch("pre_commit_template.main.render_config"):
                         with patch("subprocess.run"):
                             with patch("pathlib.Path.write_text"):
-                                with patch("pre_commit_tools.main.console"):
+                                with patch("pre_commit_template.main.console"):
                                     main()
 
             mock_discover.assert_called_once_with(Path("/test/path"))

@@ -8,7 +8,7 @@ from pathlib import Path
 # Add root to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from pre_commit_tools.discover import (
+from pre_commit_template.discover import (
     detect_docker,
     detect_github_actions,
     detect_go,

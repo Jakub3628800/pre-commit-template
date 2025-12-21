@@ -1,7 +1,0 @@
-- id: check-exports
-  name: Check library exports
-  entry: check-exports
-  language: python
-  types: [python]
-  stages: [pre-commit]
-  description: Verify that all public functions are exported in __init__.py and non-exported functions are not imported externally

@@ -1,4 +1,4 @@
-"""Entry point for running pre-commit-tools as a module."""
+"""Entry point for running pre-commit-template as a module."""
 
 from .main import main
 
