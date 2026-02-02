@@ -1,49 +1,39 @@
 [build-system]
-requires = ["uv", "setuptools>=61.0.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
 
 [project]
 name = "pre-commit-template"
-version = "0.1.1"
+version = "0.2.0"
 description = "Auto-detect technologies and generate pre-commit configuration files."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [
     {name = "Jakub Kriz"}
 ]
-dependencies = [
-    "PyYAML>=6.0.0",
-    "rich>=13.0.0",
-    "jinja2>=3.1.0",
-    "pydantic>=2.0.0",
-    "mypy>=1.0.0",
-    "tomli>=2.0.0;python_version<'3.11'",
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Rust",
+    "Topic :: Software Development :: Quality Assurance",
 ]
 
-[project.optional-dependencies]
-dev = [
-    "pre-commit>=4.0.0",
-    "pytest>=8.0.0",
-    "pytest-cov>=5.0.0",
-]
+[project.urls]
+Repository = "https://github.com/Jakub3628800/pre-commit-template"
 
-[project.scripts]
-pre-commit-template = "pre_commit_template.main:main"
-
-[tool.setuptools]
-packages = ["pre_commit_template", "pre_commit_template.hook_templates"]
-
-[tool.setuptools.package-data]
-"*" = ["py.typed"]
-"pre_commit_template" = ["hook_templates/*.j2"]
-
-[tool.pytest.ini_options]
-markers = [
-    "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
-]
-
-[dependency-groups]
-dev = [
-    "mypy>=1.18.2",
-]
+[tool.maturin]
+bindings = "bin"
+manifest-path = "Cargo.toml"
+module-name = "pre-commit-template"
+strip = true

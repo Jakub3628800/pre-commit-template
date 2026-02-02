@@ -1,0 +1,59 @@
+//! CLI module for argument parsing.
+//!
+//! Uses clap with derive macros for simple, declarative CLI definition.
+
+use clap::Parser;
+use std::path::PathBuf;
+
+/// Auto-detect technologies and generate pre-commit configuration files.
+#[derive(Parser, Debug)]
+#[command(name = "pre-commit-template")]
+#[command(author = "Jakub Kriz")]
+#[command(version)]
+#[command(about = "Auto-detect technologies and generate pre-commit configuration files.", long_about = None)]
+pub struct Cli {
+    /// Enable interactive mode for customizing configuration
+    #[arg(short, long)]
+    pub interactive: bool,
+
+    /// Path to analyze (default: current directory)
+    #[arg(long, default_value = ".")]
+    pub path: PathBuf,
+}
+
+impl Cli {
+    /// Parse command-line arguments.
+    pub fn parse_args() -> Self {
+        Cli::parse()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_default_args() {
+        let cli = Cli::parse_from(["pre-commit-template"]);
+        assert!(!cli.interactive);
+        assert_eq!(cli.path, PathBuf::from("."));
+    }
+
+    #[test]
+    fn test_interactive_short() {
+        let cli = Cli::parse_from(["pre-commit-template", "-i"]);
+        assert!(cli.interactive);
+    }
+
+    #[test]
+    fn test_interactive_long() {
+        let cli = Cli::parse_from(["pre-commit-template", "--interactive"]);
+        assert!(cli.interactive);
+    }
+
+    #[test]
+    fn test_custom_path() {
+        let cli = Cli::parse_from(["pre-commit-template", "--path", "/some/path"]);
+        assert_eq!(cli.path, PathBuf::from("/some/path"));
+    }
+}

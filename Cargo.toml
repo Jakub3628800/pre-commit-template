@@ -1,0 +1,52 @@
+[package]
+name = "pre-commit-template"
+version = "0.2.0"
+edition = "2021"
+authors = ["Jakub Kriz"]
+description = "Auto-detect technologies and generate pre-commit configuration files."
+license = "MIT"
+repository = "https://github.com/Jakub3628800/pre-commit-template"
+
+[[bin]]
+name = "pre-commit-template"
+path = "src/main.rs"
+
+[dependencies]
+# CLI
+clap = { version = "4", features = ["derive"] }
+
+# Serialization (Pydantic equivalent)
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Template engine (Jinja2 equivalent)
+minijinja = { version = "2", features = ["loader"] }
+
+# Terminal UI (Rich equivalent)
+console = "0.15"
+dialoguer = "0.11"
+indicatif = "0.17"
+
+# File system
+walkdir = "2"
+glob = "0.3"
+ignore = "0.4"
+
+# TOML parsing
+toml = "0.8"
+
+# Date/time
+chrono = "0.4"
+
+# Regex
+regex = "1"
+
+[dev-dependencies]
+tempfile = "3"
+assert_cmd = "2"
+predicates = "3"
+
+[profile.release]
+lto = true
+strip = true
+codegen-units = 1

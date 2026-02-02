@@ -4,46 +4,80 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Setup and Installation
 ```bash
-make install          # Install package, dependencies, and pre-commit hooks
-source .venv/bin/activate  # Activate virtual environment
+# Install Rust (if not already installed)
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# Build the project
+cargo build
 ```
 
 ### Testing
 ```bash
-make test            # Run pytest tests and pre-commit hooks
-make coverage        # Generate coverage report (outputs to htmlcov/index.html)
+cargo test              # Run all tests
+cargo test <test_name>  # Run specific test
 ```
 
 ### Linting and Formatting
 ```bash
-make run-precommit   # Run all pre-commit hooks on all files
-uv run ruff check    # Run ruff linter
-uv run ruff format   # Run ruff formatter
+cargo clippy            # Run Rust linter
+cargo fmt               # Format code
+cargo fmt --check       # Check formatting without modifying
 ```
 
-### Other Commands
+### Building for Distribution
 ```bash
-make clean          # Clean build artifacts and virtual environment
-make build          # Build package
+maturin build --release     # Build Python wheel
+maturin develop             # Build and install in current virtualenv
+```
+
+### Running Locally
+```bash
+cargo run                   # Run in auto-generate mode
+cargo run -- -i             # Run in interactive mode
+cargo run -- --path /some/dir  # Analyze specific directory
 ```
 
 ## Architecture Overview
 
-This is a Python CLI tool that auto-generates `.pre-commit-config.yaml` files by detecting technologies in repositories:
+This is a Rust CLI tool that auto-generates `.pre-commit-config.yaml` files by detecting technologies in repositories. It is packaged as a Python wheel using maturin for easy installation via pip/uv.
 
-- **Discovery** (`pre_commit_template/discover.py`): Scans repository to detect technologies via file extensions and content patterns
-- **Config** (`pre_commit_template/config.py`): Pydantic configuration model for pre-commit options
-- **Hook Templates** (`pre_commit_template/hook_templates/`): Jinja2 templates for generating YAML configs
-- **CLI Interface** (`pre_commit_template/main.py`): Main entry point using argparse and rich for output formatting
+### Source Files (src/)
+- **main.rs**: Entry point, orchestrates CLI flow
+- **cli.rs**: Command-line argument parsing using clap
+- **config.rs**: Configuration struct (serde serialization)
+- **discover.rs**: Technology detection via filesystem scanning
+- **render.rs**: Template rendering using MiniJinja
+- **ui.rs**: Terminal UI (console, dialoguer, indicatif)
 
-## Key Implementation Details
+### Templates (templates/)
+Jinja2-compatible templates for generating YAML configs:
+- `base.j2` - Base pre-commit hooks
+- `python.j2` - Python-specific hooks (Ruff, Pyrefly)
+- `js.j2` - JavaScript/TypeScript hooks
+- `go.j2` - Go hooks
+- `docker.j2` - Docker hooks
+- `github_actions.j2` - GitHub Actions hooks
+- `meta.j2` - Wrapper template with header
 
-- Uses uv for package management and virtual environments
-- Supports Python 3.11+ with setuptools build system
-- Technologies detected: Python, JavaScript, TypeScript, Go, Docker, GitHub Actions, YAML, JSON, TOML, XML
-- Hook templates use Jinja2 for flexible config generation
-- Rich console output with progress indication and colored text
+## Key Dependencies
+- **clap**: CLI argument parsing
+- **serde**: Serialization/deserialization
+- **minijinja**: Jinja2-compatible template engine
+- **console + dialoguer + indicatif**: Terminal UI (Rich equivalent)
+- **ignore**: .gitignore-aware file walking
+- **walkdir**: Recursive directory traversal
+
+## Building Wheels
+```bash
+# For development
+maturin develop
+
+# For release
+maturin build --release
+
+# Install locally
+uv tool install dist/pre_commit_template-*.whl
+```
 
 ## Entry Point
-
-The CLI command `pre-commit-template` is registered in pyproject.toml, pointing to `pre_commit_template.main:main`.
+The binary `pre-commit-template` is installed as a CLI command when the wheel is installed.
