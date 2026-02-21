@@ -23,13 +23,13 @@ jobs:
         run: |
           cargo build --release
           mkdir -p dist
-          tar -czf dist/pre-commit-template-linux-x86_64.tar.gz -C target/release pre-commit-template
+          tar -czf dist/prec-templ-linux-x86_64.tar.gz -C target/release prec-templ
 
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
           name: binary-linux-x86_64
-          path: dist/pre-commit-template-linux-x86_64.tar.gz
+          path: dist/prec-templ-linux-x86_64.tar.gz
 
   build-wheels:
     name: Build wheels on ${{ matrix.platform.target }}
@@ -61,6 +61,7 @@ jobs:
 
   publish:
     name: Publish to PyPI
+    if: ${{ false }} # Keep PyPI publishing disabled.
     runs-on: ubuntu-latest
     needs: build-wheels
     environment:

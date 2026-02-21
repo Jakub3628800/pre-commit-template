@@ -1,5 +1,9 @@
 .PHONY: run test build clean install dev release release-test lint format
 
+VERSION ?= 0.2.0
+TAG ?= v$(VERSION)
+TARGET ?= $(shell git rev-parse --verify HEAD)
+
 # Development
 run:
 	cargo run
@@ -37,15 +41,7 @@ clean:
 
 # Release
 release:
-	@if [ -z "$(TAG)" ]; then \
-		echo "Usage: make release TAG=vX.Y.Z"; \
-		exit 1; \
-	fi
-	gh release create "$(TAG)" --target master --title "$(TAG)" --generate-notes
+	gh release create "$(TAG)" --target "$(TARGET)" --title "$(TAG)" --generate-notes
 
 release-test:
-	@if [ -z "$(TAG)" ]; then \
-		echo "Usage: make release-test TAG=vX.Y.Z-test.N [TARGET=branch-or-sha]"; \
-		exit 1; \
-	fi
-	gh release create "$(TAG)" --target "$(or $(TARGET),master)" --prerelease --title "$(TAG)" --generate-notes
+	gh release create "$(TAG)" --target "$(TARGET)" --prerelease --title "$(TAG)" --generate-notes
