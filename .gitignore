@@ -1,16 +1,27 @@
+# Python
 __pycache__/
 *.py[cod]
-
-.cursorrules
-
-
 env/
 venv/
 .venv/
 .hypothesis/
-dist/
 .coverage
 *.egg-info/
 
+# Rust
+target/
+Cargo.lock
+
 # Node.js
 node_modules/
+
+# IDE/Editor
+.cursorrules
+.idea/
+.vscode/
+
+# Build artifacts
+dist/
+
+# Coverage
+htmlcov/
