@@ -1,4 +1,4 @@
-.PHONY: run test build clean install dev release lint format
+.PHONY: run test build clean install dev release release-test lint format
 
 # Development
 run:
@@ -41,4 +41,11 @@ release:
 		echo "Usage: make release TAG=vX.Y.Z"; \
 		exit 1; \
 	fi
-	gh release create "$(TAG)" --generate-notes
+	gh release create "$(TAG)" --target master --title "$(TAG)" --generate-notes
+
+release-test:
+	@if [ -z "$(TAG)" ]; then \
+		echo "Usage: make release-test TAG=vX.Y.Z-test.N [TARGET=branch-or-sha]"; \
+		exit 1; \
+	fi
+	gh release create "$(TAG)" --target "$(or $(TARGET),master)" --prerelease --title "$(TAG)" --generate-notes
