@@ -17,7 +17,6 @@ clap = { version = "4", features = ["derive"] }
 
 # Serialization (Pydantic equivalent)
 serde = { version = "1", features = ["derive"] }
-serde_json = "1"
 
 # Template engine (Jinja2 equivalent)
 minijinja = { version = "2", features = ["loader"] }
@@ -28,8 +27,6 @@ dialoguer = "0.11"
 indicatif = "0.17"
 
 # File system
-walkdir = "2"
-glob = "0.3"
 ignore = "0.4"
 
 # TOML parsing

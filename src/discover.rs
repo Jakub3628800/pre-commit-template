@@ -192,8 +192,8 @@ pub fn detect_python_version(path: &Path) -> Option<String> {
                     if let Some(requires_python) =
                         project.get("requires-python").and_then(|r| r.as_str())
                     {
-                        // Extract version like ">=3.11" -> "python3.11"
-                        let re = Regex::new(r">=\s*(\d+\.\d+)").unwrap();
+                        // Extract first Python version token, e.g. ">=3.11,<4" -> "python3.11"
+                        let re = Regex::new(r"(\d+\.\d+(?:\.\d+)?)").unwrap();
                         if let Some(caps) = re.captures(requires_python) {
                             return Some(format!("python{}", &caps[1]));
                         }
@@ -277,6 +277,7 @@ pub fn discover_config(path: &Path) -> PreCommitConfig {
 mod tests {
     use super::*;
     use std::collections::HashSet;
+    use tempfile::tempdir;
 
     #[test]
     fn test_detect_python() {
@@ -320,5 +321,46 @@ mod tests {
         assert!(!detect_javascript(&files));
         assert!(!detect_go(&files));
         assert!(!detect_docker(&files));
+    }
+
+    #[test]
+    fn test_detect_python_version_from_pyproject() {
+        let tmp = tempdir().unwrap();
+        fs::write(
+            tmp.path().join("pyproject.toml"),
+            "[project]\nrequires-python = \">=3.11,<4\"",
+        )
+        .unwrap();
+
+        assert_eq!(
+            detect_python_version(tmp.path()),
+            Some("python3.11".to_string())
+        );
+    }
+
+    #[test]
+    fn test_detect_python_version_patch_version() {
+        let tmp = tempdir().unwrap();
+        fs::write(
+            tmp.path().join("pyproject.toml"),
+            "[project]\nrequires-python = \">=3.10.5\"",
+        )
+        .unwrap();
+
+        assert_eq!(
+            detect_python_version(tmp.path()),
+            Some("python3.10.5".to_string())
+        );
+    }
+
+    #[test]
+    fn test_detect_python_version_from_python_version_file() {
+        let tmp = tempdir().unwrap();
+        fs::write(tmp.path().join(".python-version"), "3.12.1\n").unwrap();
+
+        assert_eq!(
+            detect_python_version(tmp.path()),
+            Some("python3.12.1".to_string())
+        );
     }
 }

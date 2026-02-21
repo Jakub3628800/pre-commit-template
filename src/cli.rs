@@ -16,6 +16,10 @@ pub struct Cli {
     #[arg(short, long)]
     pub interactive: bool,
 
+    /// Only generate .pre-commit-config.yaml and skip running pre-commit install/run
+    #[arg(long, conflicts_with = "interactive")]
+    pub generate_only: bool,
+
     /// Path to analyze (default: current directory)
     #[arg(long, default_value = ".")]
     pub path: PathBuf,
@@ -36,6 +40,7 @@ mod tests {
     fn test_default_args() {
         let cli = Cli::parse_from(["pre-commit-template"]);
         assert!(!cli.interactive);
+        assert!(!cli.generate_only);
         assert_eq!(cli.path, PathBuf::from("."));
     }
 
@@ -55,5 +60,12 @@ mod tests {
     fn test_custom_path() {
         let cli = Cli::parse_from(["pre-commit-template", "--path", "/some/path"]);
         assert_eq!(cli.path, PathBuf::from("/some/path"));
+    }
+
+    #[test]
+    fn test_generate_only() {
+        let cli = Cli::parse_from(["pre-commit-template", "--generate-only"]);
+        assert!(cli.generate_only);
+        assert!(!cli.interactive);
     }
 }

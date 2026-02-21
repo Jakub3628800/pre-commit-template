@@ -28,6 +28,9 @@ pip install pre-commit-template
 # Auto-detect and generate config
 pre-commit-template
 
+# Only generate .pre-commit-config.yaml (skip install/run)
+pre-commit-template --generate-only
+
 # Interactive mode with customization prompts
 pre-commit-template -i
 ```
