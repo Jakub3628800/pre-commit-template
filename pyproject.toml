@@ -30,7 +30,7 @@ classifiers = [
 ]
 
 [project.urls]
-Repository = "https://github.com/Jakub3628800/pre-commit-template"
+Repository = "https://github.com/Jakub3628800/prec-templ"
 
 [tool.maturin]
 bindings = "bin"

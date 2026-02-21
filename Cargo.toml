@@ -5,7 +5,7 @@ edition = "2021"
 authors = ["Jakub Kriz"]
 description = "Auto-detect technologies and generate pre-commit configuration files."
 license = "MIT"
-repository = "https://github.com/Jakub3628800/pre-commit-template"
+repository = "https://github.com/Jakub3628800/prec-templ"
 
 [[bin]]
 name = "prec-templ"
