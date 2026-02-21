@@ -40,9 +40,6 @@ jobs:
       - name: Run tests
         run: cargo test
 
-      - name: Build
-        run: cargo build --release
-
   build-wheels:
     runs-on: ubuntu-latest
     needs: test

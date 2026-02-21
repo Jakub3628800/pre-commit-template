@@ -34,3 +34,11 @@ install:
 clean:
 	cargo clean
 	rm -rf target/ dist/ *.egg-info .pytest_cache/ .mypy_cache/ .ruff_cache/
+
+# Release
+release:
+	@if [ -z "$(TAG)" ]; then \
+		echo "Usage: make release TAG=vX.Y.Z"; \
+		exit 1; \
+	fi
+	gh release create "$(TAG)" --generate-notes
