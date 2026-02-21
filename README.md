@@ -1,4 +1,4 @@
-# pre-commit-template
+# prec-templ
 
 Automatically detects technologies in your repository and generates an appropriate `.pre-commit-config.yaml` file with relevant hooks.
 
@@ -6,33 +6,34 @@ Automatically detects technologies in your repository and generates an appropria
 
 ## Quick Start
 
-### Using uv (Recommended)
+### Using uv (Recommended, No Install)
 
 ```bash
-# Install from GitHub
-uv tool install git+https://github.com/Jakub3628800/pre-commit-template
+# Run directly from GitHub (ephemeral)
+uv tool run --isolated --from "git+https://github.com/Jakub3628800/pre-commit-template@master" prec-templ --generate-only
 
-# Or from PyPI (after release)
-uv tool install pre-commit-template
+# Interactive mode (ephemeral)
+uv tool run --isolated --from "git+https://github.com/Jakub3628800/pre-commit-template@master" prec-templ -i
 ```
 
-### Using pip
+### Optional: Install Persistently
 
 ```bash
-pip install pre-commit-template
+# Install as a tool
+uv tool install git+https://github.com/Jakub3628800/pre-commit-template@master
 ```
 
 ### Running
 
 ```bash
 # Auto-detect and generate config
-pre-commit-template
+prec-templ
 
 # Only generate .pre-commit-config.yaml (skip install/run)
-pre-commit-template --generate-only
+prec-templ --generate-only
 
 # Interactive mode with customization prompts
-pre-commit-template -i
+prec-templ -i
 ```
 
 The generator will:

@@ -1,4 +1,4 @@
-//! pre-commit-template: Auto-detect technologies and generate pre-commit configuration files.
+//! prec-templ: Auto-detect technologies and generate pre-commit configuration files.
 //!
 //! This is the main entry point for the CLI tool.
 
