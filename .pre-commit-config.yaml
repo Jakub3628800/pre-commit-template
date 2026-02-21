@@ -1,5 +1,5 @@
 # ===============================================================================
-# pre-commit-config.yaml created with https://github.com/Jakub3628800/pre-commit-template
+# pre-commit-config.yaml created with https://github.com/Jakub3628800/prec-templ
 # ===============================================================================
 default_language_version:
   python: python3.14

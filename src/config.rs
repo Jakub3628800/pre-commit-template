@@ -1,4 +1,4 @@
-//! Configuration module for pre-commit template generation.
+//! Configuration module for prec-templ generation.
 //!
 //! This module defines the configuration structure that controls which
 //! pre-commit hooks are generated, equivalent to the Python Pydantic model.
