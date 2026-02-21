@@ -76,8 +76,8 @@ maturin develop
 maturin build --release
 
 # Install locally
-uv tool install dist/pre_commit_template-*.whl
+uv tool install dist/prec_templ-*.whl
 ```
 
 ## Entry Point
-The binary `pre-commit-template` is installed as a CLI command when the wheel is installed.
+The binary `prec-templ` is installed as a CLI command when the wheel is installed.
